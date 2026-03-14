@@ -1,0 +1,9 @@
+from sqlalchemy import Table, Column, Integer, ForeignKey
+from app.models.base import Base
+
+organization_activity = Table(
+    "organization_activity",
+    Base.metadata,
+    Column("organization_id", Integer, ForeignKey("organizations.id", ondelete="CASCADE"), primary_key=True),
+    Column("activity_id", Integer, ForeignKey("activities.id", ondelete="CASCADE"), primary_key=True),
+)
