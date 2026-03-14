@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from sqlalchemy import String, Integer, ForeignKey
 from app.models.base import Base
 from app.models.association import organization_activity
@@ -18,3 +18,17 @@ class Activity(Base):
         secondary=organization_activity,
         back_populates="activities",
     )
+
+    @validates("parent")
+    def validate_parent(self, key, parent):
+        if parent is None:
+            return parent
+
+        depth = 1
+        current = parent
+        while current is not None:
+            depth += 1
+            if depth > 3:
+                raise ValueError("Activity nesting level cannot exceed 3")
+            current = current.parent
+        return parent
